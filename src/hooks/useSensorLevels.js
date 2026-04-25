@@ -25,10 +25,23 @@ export const useSensorLevels = () => {
 
   useEffect(() => {
     let isMounted = true;
+    let inFlight = false;
+    let activeController = null;
 
     const fetchSensorReadings = async () => {
+      if (inFlight) {
+        return;
+      }
+
+      inFlight = true;
+      const controller = new AbortController();
+      activeController = controller;
+
       try {
-        const response = await fetch(sensorUrl, { cache: 'no-store' });
+        const response = await fetch(sensorUrl, {
+          cache: 'no-store',
+          signal: controller.signal,
+        });
 
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
@@ -55,6 +68,10 @@ export const useSensorLevels = () => {
           setError(null);
         });
       } catch (fetchError) {
+        if (fetchError.name === 'AbortError') {
+          return;
+        }
+
         if (!isMounted) {
           return;
         }
@@ -63,6 +80,8 @@ export const useSensorLevels = () => {
           setIsConnected(false);
           setError(fetchError.message || 'No se pudo consultar sensores');
         });
+      } finally {
+        inFlight = false;
       }
     };
 
@@ -71,6 +90,7 @@ export const useSensorLevels = () => {
 
     return () => {
       isMounted = false;
+      activeController?.abort();
       clearInterval(intervalId);
     };
   }, [sensorUrl]);

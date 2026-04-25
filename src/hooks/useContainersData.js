@@ -7,10 +7,14 @@ export const useContainersData = () => {
 
   useEffect(() => {
     let isMounted = true;
+    const controller = new AbortController();
 
     const loadContainers = async () => {
       try {
-        const response = await fetch('/data/datos.json', { cache: 'no-store' });
+        const response = await fetch('/data/datos.json', {
+          cache: 'no-store',
+          signal: controller.signal,
+        });
 
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
@@ -19,10 +23,11 @@ export const useContainersData = () => {
         const containersData = await response.json();
         const features = containersData?.features ?? [];
 
-        // Extrae los tipos únicos de contenedores
         const uniqueTypes = [...new Set(
-          features.map((feature) => feature.properties.Id.split('|')[0])
-        )];
+          features
+            .map((feature) => feature?.properties?.Id?.split('|')[0])
+            .filter(Boolean)
+        )].sort((a, b) => a.localeCompare(b));
 
         if (!isMounted) {
           return;
@@ -32,6 +37,10 @@ export const useContainersData = () => {
         setTypes(uniqueTypes);
         setLoading(false);
       } catch (error) {
+        if (error.name === 'AbortError') {
+          return;
+        }
+
         if (!isMounted) {
           return;
         }
@@ -45,6 +54,7 @@ export const useContainersData = () => {
 
     return () => {
       isMounted = false;
+      controller.abort();
     };
   }, []);
 

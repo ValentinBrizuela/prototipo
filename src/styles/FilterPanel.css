@@ -4,6 +4,7 @@
   padding: 20px;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
+  scroll-behavior: smooth;
   border-right: 1px solid #e0e0e0;
 }
 
@@ -101,6 +102,11 @@
 .alert-item.selected {
   border-color: #2563eb;
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.alert-item:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.45);
+  outline-offset: 2px;
 }
 
 .alert-level {
@@ -214,6 +220,12 @@
 .analysis-suggestion.selected {
   border-color: #2563eb;
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.analysis-suggestion:focus-visible,
+.filter-label input:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.45);
+  outline-offset: 2px;
 }
 
 .analysis-zone-header {

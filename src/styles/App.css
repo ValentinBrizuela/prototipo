@@ -48,6 +48,11 @@ body {
   background: rgba(255, 255, 255, 0.28);
 }
 
+.theme-toggle:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, 0.85);
+  outline-offset: 2px;
+}
+
 .sensor-status-row {
   display: flex;
   align-items: center;
@@ -75,6 +80,16 @@ body {
 .sensor-status-text {
   font-size: 14px;
   font-weight: 600;
+}
+
+.sensor-error-pill {
+  font-size: 12px;
+  font-weight: 700;
+  color: #7f1d1d;
+  background: rgba(254, 202, 202, 0.9);
+  border: 1px solid rgba(127, 29, 29, 0.25);
+  padding: 2px 8px;
+  border-radius: 999px;
 }
 
 .container-main {
@@ -108,5 +123,9 @@ body {
 
   .sensor-status-row {
     gap: 8px;
+  }
+
+  .sensor-error-pill {
+    font-size: 11px;
   }
 }
